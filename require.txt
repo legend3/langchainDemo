@@ -1,0 +1,39 @@
+# LangChain 核心框架
+langchain==0.3.27
+langchain-core==0.3.78
+langchain-community==0.3.31
+# 向量数据库和检索
+langchain-chroma==0.2.6
+langchain-text-splitters==0.3.11
+# 大模型集成
+langchain-openai==0.3.34
+langchain-tavily==0.2.12
+# 高级功能
+langchain-experimental==0.3.4
+langgraph==0.6.10
+langgraph-checkpoint==2.1.2
+langgraph-prebuilt==0.6.4
+langserve==0.3.2
+langsmith==0.4.31
+
+
+# 通义千问支持
+dashscope==1.24.6
+# OpenAI 格式兼容
+openai==2.0.1
+tiktoken==0.11.0
+# 嵌入模型和向量化
+numpy==2.3.3
+onnxruntime==1.23.1
+# 序列化和配置
+pydantic==2.11.9
+pydantic_core==2.33.2
+pydantic-settings==2.11.0
+dataclasses-json==0.6.7
+# HTTP 客户端
+httpx==0.28.1
+aiohttp==3.12.15
+requests==2.32.5
+
+
+duckduckgo-search==8.1.1

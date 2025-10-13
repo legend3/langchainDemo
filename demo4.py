@@ -1,40 +1,31 @@
-import os
-
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_core.messages import HumanMessage
-from langchain_community.chat_models import ChatTongyi  # ✅ 替换 ChatOpenAI
-from langchain_community.embeddings import TongyiEmbeddings  # ✅ 替换 OpenAIEmbeddings
+from langchain_community.chat_models import ChatTongyi
 from langgraph.prebuilt import chat_agent_executor
-from langserve import add_routes
 
+""" 搜索工具 """
 
-
-# ---------------- 创建模型（通义千问） ----------------
-# 可用模型："qwen-turbo"（快速） / "qwen-plus"（平衡） / "qwen-max"（最强）
+# ---------------- 创建模型 ----------------
 model = ChatTongyi(model="qwen-plus")
 
-# ---------------- 创建 Tavily 搜索工具 ----------------
-search = TavilySearchResults(max_results=2)  # 只返回两个搜索结果
+# ---------------- 创建搜索工具 ----------------
+search = DuckDuckGoSearchRun()
 tools = [search]
 
-# ---------------- 创建 Agent（具有自动工具调用能力） ----------------
+# ---------------- 创建 Agent ----------------
 agent_executor = chat_agent_executor.create_tool_calling_executor(model, tools)
 
-# ---------------- 测试 1：不需要搜索的普通问题 ----------------
-resp = agent_executor.invoke({
-    "messages": [HumanMessage(content="中国的首都是哪个城市？")]
-})
-print("\n🧠 问题：中国的首都是哪个城市？")
-for m in resp["messages"]:
-    print(f"角色：{m.type} ｜ 内容：{m.content}")
+# ---------------- 测试 ----------------
+print("🚀 测试开始...")
 
-# ---------------- 测试 2：需要调用搜索工具的问题 ----------------
-resp2 = agent_executor.invoke({
-    "messages": [HumanMessage(content="北京天气怎么样？")]
-})
-print("\n🌦️ 问题：北京天气怎么样？")
-for m in resp2["messages"]:
-    print(f"角色：{m.type} ｜ 内容：{m.content}")
+# 测试1：普通问题
+resp1 = agent_executor.invoke({"messages": [HumanMessage(content="湖南的省会是哪个城市？")]})
+print("\n🧠 普通问题测试：")
+print("最终回答：", resp1["messages"][-1].content)
 
-# 输出最后的回答内容
-print("\n✅ 最终回答：", resp2["messages"][-1].content)
+# 测试2：需要搜索的问题
+resp2 = agent_executor.invoke({"messages": [HumanMessage(content="今天长沙天气怎么样？")]})
+print("\n🌦️ 搜索问题测试：")
+print("最终回答：", resp2["messages"][-1].content)
+
+print("\n✅ 测试完成！")
