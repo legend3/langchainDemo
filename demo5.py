@@ -1,4 +1,3 @@
-import os
 import bs4
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
@@ -84,6 +83,7 @@ def get_session_history(session_id: str):
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
+
 
 # ================= 整合为完整链 =================
 chain = create_retrieval_chain(history_chain, chain1)

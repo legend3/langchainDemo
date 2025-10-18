@@ -1,6 +1,5 @@
-import os
 from operator import itemgetter
-
+import pymysql
 import bs4
 from langchain.chains.sql_database.query import create_sql_query_chain
 from langchain_community.utilities import SQLDatabase
@@ -10,8 +9,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_community.chat_models import ChatTongyi  # ✅ 通义千问大模型
 
+
 # ======================== PyMySQL 兼容 MySQLdb ========================
-import pymysql
 pymysql.install_as_MySQLdb()  # 🔑 关键
 
 # ======================== 初始化模型 ========================
