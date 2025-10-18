@@ -9,18 +9,18 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_community.chat_models import ChatTongyi         # ✅ 替换 ChatOpenAI
-from langchain_community.embeddings import TongyiEmbeddings    # ✅ 替换 OpenAIEmbeddings
-
+from langchain_community.chat_models import ChatTongyi         # 替换 ChatOpenAI
+from langchain_community.embeddings import DashScopeEmbeddings    # 替换 OpenAIEmbeddings
 
 
 # ================= 加载网页内容 =================
 loader = WebBaseLoader(
-    web_paths=["https://lilianweng.github.io/posts/2023-06-23-agent/"],
+    web_paths=["https://www.cnblogs.com/superhin/p/17755515.html"],  # 确认正文在 HTML 中
     bs_kwargs=dict(
-        parse_only=bs4.SoupStrainer(class_=("post-header", "post-title", "post-content"))
+        parse_only=bs4.SoupStrainer(class_=("forFlow"))
     ),
 )
+
 
 docs = loader.load()
 
@@ -29,8 +29,8 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 splits = splitter.split_documents(docs)
 
 # ================= 向量化存储（Chroma） =================
-# ✅ 使用 TongyiEmbeddings 替换 OpenAIEmbeddings
-vectorstore = Chroma.from_documents(documents=splits, embedding=TongyiEmbeddings())
+# ✅ 使用 DashScopeEmbeddings 替换 OpenAIEmbeddings
+vectorstore = Chroma.from_documents(documents=splits, embedding=DashScopeEmbeddings(model="text-embedding-v2"))
 
 # 检索器
 retriever = vectorstore.as_retriever()
@@ -79,6 +79,7 @@ history_chain = create_history_aware_retriever(model, retriever, retriever_histo
 # ================= 会话记忆（Memory） =================
 store = {}
 
+
 def get_session_history(session_id: str):
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
@@ -107,3 +108,4 @@ resp2 = result_chain.invoke(
     config={"configurable": {"session_id": "zs123456"}},  # ✅ 使用相同会话 ID 共享上下文
 )
 print("💬 第二次回答：", resp2["answer"])
+
